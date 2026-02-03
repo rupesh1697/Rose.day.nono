@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7 Hearts, One Love</title>
+<style>
+body {
+  margin: 0;
+  font-family: 'Comic Sans MS', 'Poppins', sans-serif;
+  background: linear-gradient(#ffe6f0, #fff);
+  text-align: center;
+  color: #444;
+}
+.screen {
+  display: none;
+  padding: 30px 20px;
+}
+.active { display: block; }
+
+button {
+  padding: 12px 20px;
+  border-radius: 20px;
+  border: none;
+  background: #ff6fa5;
+  color: white;
+  font-size: 16px;
+}
+
+.heart {
+  font-size: 48px;
+  margin: 10px;
+  cursor: pointer;
+  opacity: 0.3;
+}
+.heart.active {
+  opacity: 1;
+}
+.reveal {
+  margin-top: 30px;
+  font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="welcome" class="screen active">
+  <h2>Hi you 🌸</h2>
+  <p>This Valentine week…<br>just play. I’ll handle the love.</p>
+  <button onclick="startGame()">Start 💗</button>
+</div>
+
+<div id="game" class="screen">
+  <h3>7 Hearts, One Love</h3>
+  <div id="hearts"></div>
+  <div class="reveal" id="message"></div>
+</div>
+
+<script>
+let day = 0;
+const messages = [
+  "Some flowers fade.<br>Some become home.",
+  "You already chose me once.<br>I still choose you every day.",
+  "Sweet things are nice.<br>But you calm me.",
+  "Some hugs fix things<br>words never can.",
+  "I won’t promise perfection.<br>Only presence.",
+  "This… this is where<br>I want you to feel safe.",
+  "Loving you isn’t loud.<br>It’s steady.<br>It feels like home.<br><br>Happy Valentine Week ❤️"
+];
+
+function startGame() {
+  document.getElementById('welcome').classList.remove('active');
+  document.getElementById('game').classList.add('active');
+  renderHearts();
+}
+
+function renderHearts() {
+  const container = document.getElementById('hearts');
+  container.innerHTML = "";
+  for (let i = 0; i < 7; i++) {
+    const h = document.createElement("span");
+    h.innerHTML = "❤️";
+    h.className = "heart " + (i === day ? "active" : "");
+    if (i === day) h.onclick = nextHeart;
+    container.appendChild(h);
+  }
+}
+
+function nextHeart() {
+  document.getElementById('message').innerHTML = messages[day];
+  day++;
+  if (day < 7) renderHearts();
+}
+</script>
+
+</body>
+</html>
