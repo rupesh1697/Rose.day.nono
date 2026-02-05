@@ -21,7 +21,7 @@ body {
   width: 100%;
   text-align: center;
   font-size: 14px;
-  opacity: 0.65;
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -40,7 +40,7 @@ body {
 
 @keyframes float {
   0% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  50% { transform: translateY(-14px); }
   100% { transform: translateY(0); }
 }
 
@@ -61,7 +61,7 @@ body {
 #final {
   position: fixed;
   inset: 0;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.94);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -102,24 +102,32 @@ body {
 
 <body>
 
-<div id="counter">Tap anywhere 🌱</div>
+<div id="counter">Tap gently 🌱</div>
 
 <div id="final">
   <img src="us.jpg" alt="Us together">
   <div class="tag">
-    Happy Rose Day! 🌹<br>
-    <strong>Beautiful phools from your fool</strong>
+    Happy Rose Day, my beautiful phool (Nono) 🌹<br>
+    <strong>— from your fool ❤️</strong>
   </div>
 </div>
 
-<audio id="popSound">
+<!-- Sounds -->
+<audio id="popSound" preload="auto">
   <source src="https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-up-alert-notification-2357.mp3">
+</audio>
+
+<audio id="bgMusic" preload="auto" loop>
+  <source src="https://assets.mixkit.co/music/preview/mixkit-soft-romantic-background-242.mp3">
 </audio>
 
 <script>
 let taps = 0;
+let musicStarted = false;
+
 const flowers = ["🌸", "🌼", "🌺", "🌷", "🌹", "🪷"];
 const pop = document.getElementById("popSound");
+const music = document.getElementById("bgMusic");
 const final = document.getElementById("final");
 
 document.body.addEventListener("click", bloom);
@@ -127,6 +135,16 @@ document.body.addEventListener("touchstart", bloom, { passive: true });
 
 function bloom(e) {
   taps++;
+
+  // start music on first tap
+  if (!musicStarted) {
+    music.volume = 0.35;
+    music.play().catch(()=>{});
+    musicStarted = true;
+  }
+
+  // vibration on every tap
+  if (navigator.vibrate) navigator.vibrate(15);
 
   // normal flower
   const f = document.createElement("div");
@@ -139,14 +157,15 @@ function bloom(e) {
 
   pop.currentTime = 0;
   pop.play().catch(()=>{});
-  if (navigator.vibrate) navigator.vibrate(12);
 
   // rose explosion every 10 taps
-  if (taps % 10 === 0) roseExplosion(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
+  if (taps % 10 === 0) {
+    roseExplosion(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
+  }
 
   // final reveal at 100 taps
   if (taps === 100) {
-    setTimeout(() => final.classList.add("show"), 500);
+    setTimeout(() => final.classList.add("show"), 600);
   }
 
   setTimeout(() => f.remove(), 10000);
@@ -159,8 +178,8 @@ function roseExplosion(cx, cy) {
     r.textContent = "🌹";
     r.style.left = (cx - 20) + "px";
     r.style.top = (cy - 20) + "px";
-    r.style.setProperty("--x", (Math.random()*200 - 100) + "px");
-    r.style.setProperty("--y", (Math.random()*200 - 100) + "px");
+    r.style.setProperty("--x", (Math.random()*220 - 110) + "px");
+    r.style.setProperty("--y", (Math.random()*220 - 110) + "px");
     document.body.appendChild(r);
     setTimeout(() => r.remove(), 1200);
   }
