@@ -3,141 +3,227 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>7 Hearts, One Love</title>
+<title>Rose Day 🌹</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+  height: 100vh;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(#fff0f5, #ffffff);
+  background: radial-gradient(circle at top, #fff5fa, #fbe3ee);
+  overflow: hidden;
   color: #444;
 }
 
-.section {
-  min-height: 100vh;
-  padding: 40px 20px;
+/* cinematic overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.08));
+  pointer-events: none;
+}
+
+.scene {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  border-bottom: 1px dashed #ffd6e6;
+  padding: 20px;
+  animation: slowZoom 20s linear forwards;
+}
+
+@keyframes slowZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.03); }
 }
 
 h2 {
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
-.heart {
-  font-size: 70px;
-  margin: 20px;
-  animation: pulse 2s infinite;
-  cursor: pointer;
+.subtitle {
+  font-size: 14px;
+  opacity: 0.6;
+  margin-top: 6px;
 }
 
-.locked {
-  opacity: 0.3;
-  animation: none;
+#rose {
+  font-size: 100px;
+  margin: 50px 0;
+  transition: transform 3s ease, filter 3s ease;
+  filter: drop-shadow(0 0 0 rgba(255,100,150,0));
 }
 
-.message {
-  margin-top: 20px;
+#rose.bloom {
+  transform: scale(1.5) rotate(6deg);
+  filter: drop-shadow(0 0 30px rgba(255,120,180,0.6));
+}
+
+#hint {
+  font-size: 14px;
+  opacity: 0.5;
+  margin-top: 10px;
+}
+
+#message {
+  margin-top: 40px;
   font-size: 18px;
-  line-height: 1.6;
+  line-height: 1.7;
   opacity: 0;
-  transition: opacity 1.5s ease;
+  transition: opacity 3s ease;
 }
 
-.message.show {
+#message.show {
   opacity: 1;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+/* floating light particles */
+.light {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: rgba(255,180,200,0.6);
+  border-radius: 50%;
+  animation: float 12s linear infinite;
 }
 
-.final img {
-  width: 100%;
-  max-width: 360px;
-  border-radius: 20px;
-  margin-top: 30px;
-  opacity: 0;
-  transition: opacity 2s ease;
+@keyframes float {
+  from {
+    transform: translateY(100vh) scale(0.6);
+    opacity: 0;
+  }
+  20% { opacity: 1; }
+  to {
+    transform: translateY(-10vh) scale(1);
+    opacity: 0;
+  }
 }
-.final img.show {
-  opacity: 1;
+
+/* petals */
+.petal {
+  position: fixed;
+  top: -30px;
+  font-size: 22px;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(120vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- Welcome -->
-<div class="section">
-  <h2>Hi Nono 🌸</h2>
-  <p>Scroll slowly.  
-  This week is not to rush.</p>
-</div>
+<div class="scene">
+  <h2>Rose Day 🌹</h2>
+  <div class="subtitle">Some things bloom only when you stay.</div>
 
-<!-- Hearts -->
-<script>
-const days = [
-  { date: 7, text: "Some flowers fade.<br>Some become home." },
-  { date: 8, text: "You already chose me once.<br>I still choose you every day." },
-  { date: 9, text: "Sweet things are nice.<br>But you calm me." },
-  { date: 10, text: "Some hugs fix things<br>words never can." },
-  { date: 11, text: "I won’t promise perfection.<br>Only presence." },
-  { date: 12, text: "This… this is where<br>I want you to feel safe." },
-  { date: 13, text: "Loving you isn’t loud.<br>It’s steady.<br>It feels like home." }
-];
+  <div id="rose">🥀</div>
 
-const today = new Date().getDate();
+  <div id="hint">Press & hold</div>
 
-days.forEach((d, i) => {
-  document.write(`
-    <div class="section">
-      <div class="heart ${today < d.date ? 'locked' : ''}" 
-        onclick="reveal(${i}, ${d.date})">❤️</div>
-      <div class="message" id="msg${i}">
-        ${today < d.date 
-          ? `Come back on Feb ${d.date} 💌` 
-          : d.text}
-      </div>
-    </div>
-  `);
-});
-
-function reveal(i, unlockDate) {
-  if (today < unlockDate) return;
-  document.getElementById("msg" + i).classList.add("show");
-  playSound();
-}
-
-function playSound() {
-  const audio = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-soft-bubble-pop-2018.mp3");
-  audio.play();
-}
-</script>
-
-<!-- Final Section -->
-<div class="section final">
-  <h2>And this…</h2>
-  <p>is where I pause.</p>
-
-  <img src="us.jpg" id="usPic">
-
-  <div class="message show">
-    Happy Valentine Week,<br>
-    my love 🤍
+  <div id="message">
+    Some flowers fade.<br>
+    Some slowly become home.
   </div>
 </div>
 
+<!-- ambient music -->
+<audio id="music" loop>
+  <source src="https://assets.mixkit.co/music/preview/mixkit-ambient-piano-113.mp3">
+</audio>
+
+<!-- bloom chime -->
+<audio id="chime">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sweep-game-trophy-257.mp3">
+</audio>
+
+<!-- soft breath / whisper feel -->
+<audio id="breath">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-soft-breathing-1496.mp3">
+</audio>
+
 <script>
-setTimeout(() => {
-  document.getElementById("usPic").classList.add("show");
-}, 1000);
+let holding = false;
+let bloomed = false;
+let timer;
+
+const rose = document.getElementById("rose");
+const msg = document.getElementById("message");
+const music = document.getElementById("music");
+const chime = document.getElementById("chime");
+const breath = document.getElementById("breath");
+
+function startHold() {
+  if (bloomed) return;
+  holding = true;
+
+  music.volume = 0.4;
+  music.play().catch(()=>{});
+
+  timer = setTimeout(bloom, 2000);
+}
+
+function endHold() {
+  holding = false;
+  clearTimeout(timer);
+}
+
+function bloom() {
+  if (!holding) return;
+  bloomed = true;
+
+  rose.innerHTML = "🌹";
+  rose.classList.add("bloom");
+
+  breath.play().catch(()=>{});
+  setTimeout(() => chime.play().catch(()=>{}), 800);
+
+  if (navigator.vibrate) {
+    navigator.vibrate([40, 30, 40]);
+  }
+
+  msg.classList.add("show");
+  petals();
+}
+
+function petals() {
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement("div");
+    p.className = "petal";
+    p.innerHTML = "🌸";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.animationDuration = 5 + Math.random() * 4 + "s";
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 9000);
+  }
+}
+
+/* floating light particles */
+for (let i = 0; i < 18; i++) {
+  const l = document.createElement("div");
+  l.className = "light";
+  l.style.left = Math.random() * 100 + "vw";
+  l.style.animationDelay = Math.random() * 10 + "s";
+  document.body.appendChild(l);
+}
+
+rose.addEventListener("touchstart", startHold);
+rose.addEventListener("touchend", endHold);
+rose.addEventListener("mousedown", startHold);
+rose.addEventListener("mouseup", endHold);
 </script>
 
 </body>
