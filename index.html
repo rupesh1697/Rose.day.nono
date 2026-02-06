@@ -173,7 +173,6 @@
         opacity: 0.7;
     }
 
-    /* Task Screen Styles */
     .task-screen {
         display: none;
         position: fixed;
@@ -222,6 +221,7 @@
         height: 100vh;
         padding: 20px;
         position: relative;
+        overflow-y: auto;
     }
 
     .instruction {
@@ -237,7 +237,6 @@
         50% { opacity: 0.7; transform: scale(1.05); }
     }
 
-    /* Floating hearts background */
     .task-screen::before,
     .task-screen::after {
         content: '💕';
@@ -301,6 +300,29 @@
         }
     }
 
+    .hug-emoji {
+        position: fixed;
+        font-size: 6em;
+        animation: hugPop 2s ease-out forwards;
+        pointer-events: none;
+        z-index: 9999;
+    }
+
+    @keyframes hugPop {
+        0% {
+            transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            opacity: 0;
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(-50%, -50%) scale(0) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
     .final-message {
         display: none;
         position: fixed;
@@ -341,7 +363,7 @@
     .final-message h2 {
         color: #ff6b9d;
         margin-bottom: 15px;
-        font-size: 2em;
+        font-size: 3em;
     }
 
     .final-message p {
@@ -371,20 +393,19 @@
         }
     }
 
-    /* Task-specific styles */
     .heart-collect {
         position: absolute;
         font-size: 2em;
         cursor: pointer;
         transition: transform 0.2s;
-        animation: float 3s ease-in-out infinite;
+        animation: floatHeart 3s ease-in-out infinite;
     }
 
     .heart-collect:hover {
         transform: scale(1.2);
     }
 
-    @keyframes float {
+    @keyframes floatHeart {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-20px); }
     }
@@ -451,22 +472,37 @@
         width: auto;
         margin-right: 10px;
     }
+
+    .test-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #ff6b9d;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        font-size: 1.1em;
+        z-index: 2000;
+        font-weight: bold;
+    }
 </style>
 ```
 
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💕Nono ka Valentine's Week 2026💕</h1>
-            <p>One heart. One love. One Nono. ♾️</p>
-        </div>
+    <div class="test-banner">🔓 TEST MODE - ALL DAYS UNLOCKED 🔓</div>
 
 ```
+<div class="container" style="margin-top: 50px;">
+    <div class="header">
+        <h1>💕Nono ka Valentine's Week 2026💕</h1>
+        <p>One heart. One love. One Nono. ♾️</p>
+    </div>
+
     <div class="days-grid" id="daysGrid"></div>
 </div>
 
-<!-- Task Screens -->
 <div class="task-screen" id="taskScreen">
     <button class="close-btn" onclick="closeTask()">×</button>
     <div class="task-content" id="taskContent"></div>
@@ -482,8 +518,8 @@
             emoji: "🌹",
             task: "rose",
             taskDescription: "Tap anywhere to bloom 100 roses!",
-            music: "https://cdn.pixabay.com/audio/2022/03/10/audio_2c96ba22c9.mp3", // Romantic music - you can replace with your choice
-            finalImage: "YOUR_IMAGE_URL_HERE", // Replace with your personal image URL
+            music: "https://cdn.pixabay.com/audio/2022/03/10/audio_2c96ba22c9.mp3",
+            finalImage: "",
             finalMessage: "From your fool, for his beautiful phool 🌼 🌹♥️"
         },
         {
@@ -501,7 +537,7 @@
             date: "February 9, 2026",
             emoji: "🍫",
             task: "chocolate",
-            taskDescription: "Collect your choice of hearts",
+            taskDescription: "Catch 100 floating hearts!",
             finalMessage: "Life with you is sweeter than any chocolate. You're my favorite treat! 🍫💝<br><br>Nono is just kha jau😋🥰"
         },
         {
@@ -510,7 +546,7 @@
             date: "February 10, 2026",
             emoji: "🧸",
             task: "teddy",
-            taskDescription: "Give me a warm hug!",
+            taskDescription: "Find 5 teddies among 100 emojis!",
             finalMessage: "Just like a teddy bear, I want to hold you close and keep you warm forever. 🧸💕"
         },
         {
@@ -528,7 +564,7 @@
             date: "February 12, 2026",
             emoji: "🤗",
             task: "hug",
-            taskDescription: "Share your favorite memory",
+            taskDescription: "Match 10 pairs by their color!",
             finalMessage: "Ab hug karna tumne sikha hi diya hai…main toh ready hoon iss skill ka maximum utilization karne ke liye 😌🫂 bas Neha mil jaaye 😂😬😉"
         },
         {
@@ -537,7 +573,7 @@
             date: "February 13, 2026",
             emoji: "💋",
             task: "kiss",
-            taskDescription: "Trace hearts with your finger",
+            taskDescription: "Draw 10 hearts with your finger",
             finalMessage: "Ye din shayad mere syllabus mein nahi hai 😂 bhagwaan bas Neha ko sikha ke bhej de, baaki main sambhaal lunga 😌🫂 Warna next janam toh hai hi😉"
         },
         {
@@ -547,7 +583,7 @@
             emoji: "❤️",
             task: "valentine",
             taskDescription: "Open your final love letter",
-            finalMessage: "Happy Valentine's Day, my love! You are my everything. Thank you for being you. ❤️"
+            finalMessage: "Happy Valentine's Day. Thankyou for everything. 🫂❤️"
         }
     ];
 
@@ -556,11 +592,9 @@
 
     function initializeDays() {
         const grid = document.getElementById('daysGrid');
-        const today = new Date();
         
         valentineDays.forEach(day => {
-            const dayDate = new Date(2025, 1, day.day); // Month is 0-indexed
-            const isUnlocked = today >= dayDate;
+            const isUnlocked = true;
             
             const card = document.createElement('div');
             card.className = `day-card ${!isUnlocked ? 'locked' : ''}`;
@@ -622,19 +656,16 @@
     }
 
     function setupRoseTask(container, day) {
-        const flowerEmojis = ['🌹', '🌺', '🌸', '🌼', '🌻', '🌷', '💐', '🏵️', '🌴'];
+        const flowerEmojis = ['🌹', '🌺', '🌸', '🌼', '🌻', '🌷', '💐', '🏵️'];
         let audio = null;
         
-        // Setup and auto-start music if provided
         if (day.music) {
             audio = new Audio(day.music);
             audio.loop = true;
             audio.volume = 0.5;
-            // Auto-play music
             setTimeout(() => {
                 audio.play().catch(err => {
-                    console.log('Auto-play prevented, will start on first interaction');
-                    // If auto-play is blocked, play on first tap
+                    console.log('Auto-play prevented');
                     container.addEventListener('click', function playOnce() {
                         audio.play();
                         container.removeEventListener('click', playOnce);
@@ -653,12 +684,10 @@
                 taskProgress++;
                 document.getElementById('counter').textContent = `${taskProgress} / 100`;
                 
-                // Vibration on each tap
                 if (navigator.vibrate) {
-                    navigator.vibrate(50); // Vibrate for 50ms
+                    navigator.vibrate(50);
                 }
                 
-                // Random flower emoji
                 const randomFlower = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
                 
                 const flower = document.createElement('div');
@@ -708,7 +737,7 @@
         let currentPromiseIndex = 0;
         
         container.innerHTML = `
-            <div class="love-letter" style="max-width: 700px; max-height: 85vh; overflow-y: auto; scroll-behavior: smooth;">
+            <div class="love-letter" style="max-width: 700px; max-height: 85vh; overflow-y: auto;">
                 <h2 style="color: #ff6b9d; text-align: center; margin-bottom: 30px;">💍 My Promises to You, Nono</h2>
                 <div id="promiseContainer"></div>
                 <div id="finalPromise" style="display: none; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #fff5f8 0%, #ffe8f3 100%); border-radius: 15px; border: 2px solid #ff6b9d;">
@@ -749,12 +778,9 @@
                 
                 promiseContainer.appendChild(promiseDiv);
                 
-                // Animate in
                 setTimeout(() => {
                     promiseDiv.style.opacity = '1';
                     promiseDiv.style.transform = 'translateY(0)';
-                    
-                    // Smooth scroll to the new promise
                     promiseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }, 100);
                 
@@ -762,21 +788,17 @@
             }
         }
         
-        // Make function globally available
         window.handlePromiseCheck = function(index) {
             const checkbox = document.getElementById(`promise${index}`);
             if (checkbox.checked) {
-                // Vibrate on check
                 if (navigator.vibrate) {
                     navigator.vibrate(30);
                 }
                 
-                // Show next promise after a brief delay
                 setTimeout(() => {
                     if (currentPromiseIndex < promises.length) {
                         showNextPromise();
                     } else {
-                        // All promises shown, show final promise
                         setTimeout(() => {
                             const finalPromise = document.getElementById('finalPromise');
                             finalPromise.style.display = 'block';
@@ -787,12 +809,9 @@
                             setTimeout(() => {
                                 finalPromise.style.opacity = '1';
                                 finalPromise.style.transform = 'scale(1)';
-                                
-                                // Smooth scroll to final promise
                                 finalPromise.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             }, 100);
                             
-                            // Show button after final promise
                             setTimeout(() => {
                                 const btn = document.getElementById('proposeBtn');
                                 btn.style.display = 'block';
@@ -801,7 +820,6 @@
                                 btn.style.cursor = 'pointer';
                                 btn.style.animation = 'pulse 2s ease-in-out infinite';
                                 
-                                // Scroll to button
                                 setTimeout(() => {
                                     btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 }, 300);
@@ -817,32 +835,7 @@
         showFinalMessage(currentTask);
     }
 
-    function setupPromiseTask(container, day) {
-        container.innerHTML = `
-            <div class="love-letter">
-                <h2 style="color: #ff6b9d; text-align: center; margin-bottom: 20px;">Write Your Promise 🤝</h2>
-                <p style="text-align: center; margin-bottom: 20px;">What do you promise me?</p>
-                <textarea id="promiseText" rows="6" placeholder="I promise to..."></textarea>
-                <button onclick="submitPromise()">Seal My Promise 💖</button>
-            </div>
-        `;
-    }
-
-    function submitPromise() {
-        const text = document.getElementById('promiseText').value;
-        if (text.trim()) {
-            // Send email
-            const subject = encodeURIComponent('Nono\'s Promise - Promise Day 💖');
-            const body = encodeURIComponent(`Nono's Promise:\n\n${text}\n\n---\nSent with love from Valentine's Week 2026 💕`);
-            window.open(`mailto:YOUR_EMAIL@example.com?subject=${subject}&body=${body}`);
-            
-            showFinalMessage(currentTask);
-        } else {
-            alert('Please write your promise first! 💕');
-        }
-    }
-
-    function setupHugTask(container, day) {
+    function setupChocolateTask(container, day) {
         const heartEmojis = ['💝', '💖', '💕', '💗', '💓', '💞', '💘', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍'];
         
         container.innerHTML = `
@@ -855,9 +848,7 @@
         function createHeart() {
             if (taskProgress >= 100) return;
             
-            // Random emoji from the list
             const randomEmoji = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-            // Random size - big or small
             const isLarge = Math.random() > 0.5;
             const fontSize = isLarge ? '3em' : '2em';
             
@@ -873,12 +864,10 @@
                 taskProgress++;
                 document.getElementById('counter').textContent = `${taskProgress} / 100`;
                 
-                // Vibrate on collect
                 if (navigator.vibrate) {
                     navigator.vibrate(40);
                 }
                 
-                // Pop animation
                 heart.style.transform = 'scale(1.5)';
                 heart.style.opacity = '0';
                 setTimeout(() => heart.remove(), 200);
@@ -894,40 +883,39 @@
             container.appendChild(heart);
         }
         
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 10; i++) {
             setTimeout(() => createHeart(), i * 150);
         }
     }
 
     function setupTeddyTask(container, day) {
-        const items = ['🎁', '🎈', '🎀', '🌟', '⭐', '✨', '🎊', '🎉', '🎂', '🍰', '🍭', '🍬', '🌹', '💐', '🎵', '🎶', '📱', '💻', '📚', '🎨'];
+        const items = ['🎁', '🎈', '🎀', '🌟', '⭐', '✨', '🎊', '🎉', '🎂', '🍰', '🍭', '🍬', '🌹', '💐', '🎵', '🎶', '📱', '💻', '📚', '🎨',
+                       '🎯', '🎪', '🎭', '🎬', '🎤', '🎧', '🎸', '🎹', '🎺', '🎻', '🎲', '🎮', '🎰', '🎳', '⚽', '⚾', '🏀', '🏈', '🏐', '🏓',
+                       '🏸', '🏒', '🏑', '🏏', '🎾', '🎿', '🏹', '🎣', '🥊', '🥋', '🥅', '🥇', '🥈', '🥉', '🏆', '🏅', '🎗️', '🏵️', '🎖️', '🏔️',
+                       '⛰️', '🌋', '🗻', '🏕️', '🏖️', '🏜️', '🏝️', '🏞️', '🏟️', '🏛️', '🏗️', '🏘️', '🏚️', '🏠', '🏡', '🏢', '🏣', '🏤', '🏥', '🏦'];
         let teddiesFound = 0;
         const totalTeddies = 5;
         
         container.innerHTML = `
-            <div class="instruction">Find all 5 teddies hidden among the items! 🧸</div>
+            <div class="instruction">${day.taskDescription}</div>
             <div class="counter" id="counter">Found: 0 / 5</div>
-            <div id="itemsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; padding: 20px; max-width: 600px; margin: 0 auto;"></div>
+            <div id="itemsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px; padding: 20px; max-width: 800px; margin: 0 auto; max-height: 70vh; overflow-y: auto;"></div>
         `;
         
         const grid = document.getElementById('itemsGrid');
         const allItems = [];
         
-        // Add 5 teddies
         for (let i = 0; i < totalTeddies; i++) {
-            allItems.push({ emoji: '🧸', isTeddy: true, size: Math.random() > 0.5 ? '4em' : '3em' });
+            allItems.push({ emoji: '🧸', isTeddy: true, size: Math.random() > 0.5 ? '3em' : '2.5em' });
         }
         
-        // Add random items
-        for (let i = 0; i < 25; i++) {
+        for (let i = 0; i < 95; i++) {
             const randomItem = items[Math.floor(Math.random() * items.length)];
-            allItems.push({ emoji: randomItem, isTeddy: false, size: Math.random() > 0.5 ? '3.5em' : '2.5em' });
+            allItems.push({ emoji: randomItem, isTeddy: false, size: Math.random() > 0.5 ? '2.5em' : '2em' });
         }
         
-        // Shuffle items
         allItems.sort(() => Math.random() - 0.5);
         
-        // Create grid items
         allItems.forEach((item, index) => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'grid-item';
@@ -935,23 +923,20 @@
             itemDiv.style.cursor = 'pointer';
             itemDiv.style.transition = 'all 0.3s ease';
             itemDiv.style.textAlign = 'center';
-            itemDiv.style.padding = '10px';
+            itemDiv.style.padding = '8px';
             itemDiv.style.background = 'rgba(255, 255, 255, 0.8)';
             itemDiv.style.borderRadius = '10px';
             itemDiv.textContent = item.emoji;
             
             itemDiv.onclick = () => {
                 if (item.isTeddy && itemDiv.style.opacity !== '0') {
-                    // Found a teddy!
                     teddiesFound++;
                     document.getElementById('counter').textContent = `Found: ${teddiesFound} / 5`;
                     
-                    // Vibrate
                     if (navigator.vibrate) {
                         navigator.vibrate(100);
                     }
                     
-                    // Celebrate animation
                     itemDiv.style.transform = 'scale(1.5) rotate(360deg)';
                     itemDiv.style.background = 'linear-gradient(135deg, #ffd4e8, #ffe8f3)';
                     
@@ -965,7 +950,6 @@
                         }, 1000);
                     }
                 } else if (!item.isTeddy && itemDiv.style.opacity !== '0') {
-                    // Remove non-teddy item
                     itemDiv.style.transform = 'scale(0) rotate(180deg)';
                     itemDiv.style.opacity = '0';
                 }
@@ -986,94 +970,113 @@
         `;
     }
 
+    function submitPromise() {
+        const text = document.getElementById('promiseText').value;
+        if (text.trim()) {
+            const subject = encodeURIComponent('Nono\'s Promise - Promise Day 💖');
+            const body = encodeURIComponent(`Nono's Promise:\n\n${text}\n\n---\nSent with love from Valentine's Week 2026 💕`);
+            window.open(`mailto:your.email@example.com?subject=${subject}&body=${body}`);
+            
+            showFinalMessage(currentTask);
+        } else {
+            alert('Please write your promise first! 💕');
+        }
+    }
+
     function setupHugTask(container, day) {
         const pairs = [
-            { emoji: '👦🏻', color: 'blue', id: 1 },
-            { emoji: '👧🏻', color: 'blue', id: 1 },
-            { emoji: '👨🏽', color: 'green', id: 2 },
-            { emoji: '👩🏽', color: 'green', id: 2 },
-            { emoji: '🧑🏼', color: 'red', id: 3 },
-            { emoji: '🧑🏼', color: 'red', id: 3 },
-            { emoji: '👶🏾', color: 'yellow', id: 4 },
-            { emoji: '👶🏾', color: 'yellow', id: 4 },
-            { emoji: '🧒🏻', color: 'purple', id: 5 },
-            { emoji: '🧒🏻', color: 'purple', id: 5 }
+            { emoji: '🌹', color: 'red', id: 1 },
+            { emoji: '🌹', color: 'red', id: 1 },
+            { emoji: '🌺', color: 'pink', id: 2 },
+            { emoji: '🌺', color: 'pink', id: 2 },
+            { emoji: '🌸', color: 'lightpink', id: 3 },
+            { emoji: '🌸', color: 'lightpink', id: 3 },
+            { emoji: '🌼', color: 'yellow', id: 4 },
+            { emoji: '🌼', color: 'yellow', id: 4 },
+            { emoji: '🌻', color: 'orange', id: 5 },
+            { emoji: '🌻', color: 'orange', id: 5 },
+            { emoji: '🌷', color: 'magenta', id: 6 },
+            { emoji: '🌷', color: 'magenta', id: 6 },
+            { emoji: '💐', color: 'purple', id: 7 },
+            { emoji: '💐', color: 'purple', id: 7 },
+            { emoji: '🏵️', color: 'coral', id: 8 },
+            { emoji: '🏵️', color: 'coral', id: 8 },
+            { emoji: '🥀', color: 'brown', id: 9 },
+            { emoji: '🥀', color: 'brown', id: 9 },
+            { emoji: '💮', color: 'white', id: 10 },
+            { emoji: '💮', color: 'white', id: 10 }
         ];
         
         let selectedPair = null;
         let matchedPairs = 0;
         
         container.innerHTML = `
-            <div class="instruction">Match the pairs by their color! Bring them together to hug! 🤗</div>
-            <div class="counter" id="counter">Matched: 0 / 5</div>
-            <div id="pairsGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 30px; max-width: 700px; margin: 0 auto;"></div>
-            <div id="memorySection" style="display: none;">
-                <div class="love-letter" style="margin-top: 30px;">
-                    <h2 style="color: #ff6b9d; text-align: center; margin-bottom: 20px;">Share a Memory 🤗</h2>
-                    <p style="text-align: center; margin-bottom: 20px;">Tell me about your favorite moment we've shared together</p>
-                    <textarea id="memoryText" rows="6" placeholder="My favorite memory with you is..."></textarea>
-                    <button onclick="submitMemory()">Share Memory 💕</button>
-                </div>
-            </div>
+            <div class="instruction">${day.taskDescription}</div>
+            <div class="counter" id="counter">Matched: 0 / 10</div>
+            <div id="pairsGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 30px; max-width: 800px; margin: 0 auto;"></div>
         `;
         
         const grid = document.getElementById('pairsGrid');
         const shuffled = pairs.sort(() => Math.random() - 0.5);
         
-        shuffled.forEach((person, index) => {
-            const personDiv = document.createElement('div');
-            personDiv.className = 'person-item';
-            personDiv.style.fontSize = '4em';
-            personDiv.style.cursor = 'pointer';
-            personDiv.style.transition = 'all 0.3s ease';
-            personDiv.style.textAlign = 'center';
-            personDiv.style.padding = '15px';
-            personDiv.style.background = `linear-gradient(135deg, ${getColorCode(person.color)}, ${getColorCode(person.color)}88)`;
-            personDiv.style.borderRadius = '15px';
-            personDiv.style.border = '3px solid transparent';
-            personDiv.textContent = person.emoji;
-            personDiv.dataset.pairId = person.id;
+        shuffled.forEach((flower, index) => {
+            const flowerDiv = document.createElement('div');
+            flowerDiv.className = 'flower-item';
+            flowerDiv.style.fontSize = '4em';
+            flowerDiv.style.cursor = 'pointer';
+            flowerDiv.style.transition = 'all 0.3s ease';
+            flowerDiv.style.textAlign = 'center';
+            flowerDiv.style.padding = '15px';
+            flowerDiv.style.background = `linear-gradient(135deg, ${getColorCode(flower.color)}, ${getColorCode(flower.color)}88)`;
+            flowerDiv.style.borderRadius = '15px';
+            flowerDiv.style.border = '3px solid transparent';
+            flowerDiv.textContent = flower.emoji;
+            flowerDiv.dataset.pairId = flower.id;
             
-            personDiv.onclick = () => {
-                if (personDiv.style.opacity === '0') return;
+            flowerDiv.onclick = () => {
+                if (flowerDiv.style.opacity === '0') return;
                 
                 if (!selectedPair) {
-                    selectedPair = personDiv;
-                    personDiv.style.border = '3px solid #ff6b9d';
-                    personDiv.style.transform = 'scale(1.1)';
-                } else if (selectedPair === personDiv) {
+                    selectedPair = flowerDiv;
+                    flowerDiv.style.border = '3px solid #ff6b9d';
+                    flowerDiv.style.transform = 'scale(1.1)';
+                } else if (selectedPair === flowerDiv) {
                     selectedPair.style.border = '3px solid transparent';
                     selectedPair.style.transform = 'scale(1)';
                     selectedPair = null;
                 } else {
-                    if (selectedPair.dataset.pairId === personDiv.dataset.pairId) {
-                        // Match found!
+                    if (selectedPair.dataset.pairId === flowerDiv.dataset.pairId) {
                         matchedPairs++;
-                        document.getElementById('counter').textContent = `Matched: ${matchedPairs} / 5`;
+                        document.getElementById('counter').textContent = `Matched: ${matchedPairs} / 10`;
                         
                         if (navigator.vibrate) {
                             navigator.vibrate([50, 50, 50]);
                         }
                         
-                        // Hug animation
+                        // Show hug emoji animation
+                        const hugEmoji = document.createElement('div');
+                        hugEmoji.className = 'hug-emoji';
+                        hugEmoji.textContent = '🤗';
+                        hugEmoji.style.left = '50%';
+                        hugEmoji.style.top = '50%';
+                        document.body.appendChild(hugEmoji);
+                        setTimeout(() => hugEmoji.remove(), 2000);
+                        
                         selectedPair.style.transform = 'scale(1.3)';
-                        personDiv.style.transform = 'scale(1.3)';
+                        flowerDiv.style.transform = 'scale(1.3)';
                         
                         setTimeout(() => {
                             selectedPair.style.opacity = '0';
-                            personDiv.style.opacity = '0';
+                            flowerDiv.style.opacity = '0';
                             selectedPair = null;
                             
-                            if (matchedPairs === 5) {
+                            if (matchedPairs === 10) {
                                 setTimeout(() => {
-                                    document.getElementById('pairsGrid').style.display = 'none';
-                                    document.getElementById('memorySection').style.display = 'block';
-                                    document.getElementById('memorySection').scrollIntoView({ behavior: 'smooth' });
+                                    showFinalMessage(day);
                                 }, 500);
                             }
                         }, 500);
                     } else {
-                        // Wrong match
                         selectedPair.style.border = '3px solid transparent';
                         selectedPair.style.transform = 'scale(1)';
                         selectedPair = null;
@@ -1081,32 +1084,23 @@
                 }
             };
             
-            grid.appendChild(personDiv);
+            grid.appendChild(flowerDiv);
         });
         
         function getColorCode(color) {
             const colors = {
-                blue: '#6bb6ff',
-                green: '#6bff9d',
                 red: '#ff6b6b',
+                pink: '#ff6bb6',
+                lightpink: '#ffb3d9',
                 yellow: '#fff06b',
-                purple: '#d46bff'
+                orange: '#ffb36b',
+                magenta: '#ff6bff',
+                purple: '#d46bff',
+                coral: '#ff8c6b',
+                brown: '#b88968',
+                white: '#f0f0f0'
             };
             return colors[color] || '#ff6b9d';
-        }
-    }
-
-    function submitMemory() {
-        const text = document.getElementById('memoryText').value;
-        if (text.trim()) {
-            // Send email
-            const subject = encodeURIComponent('Nono\'s Memory - Hug Day 💖');
-            const body = encodeURIComponent(`Nono's Favorite Memory:\n\n${text}\n\n---\nSent with love from Valentine's Week 2026 🤗`);
-            window.open(`mailto:YOUR_EMAIL@example.com?subject=${subject}&body=${body}`);
-            
-            showFinalMessage(currentTask);
-        } else {
-            alert('Please share your memory first! 💕');
         }
     }
 
@@ -1158,7 +1152,6 @@
         function isHeartShape(path) {
             if (path.length < 20) return false;
             
-            // Simple heuristic: check if path has reasonable curvature
             const minX = Math.min(...path.map(p => p.x));
             const maxX = Math.max(...path.map(p => p.x));
             const minY = Math.min(...path.map(p => p.y));
@@ -1167,7 +1160,6 @@
             const width = maxX - minX;
             const height = maxY - minY;
             
-            // Heart should be roughly as wide as it is tall
             const ratio = Math.min(width, height) / Math.max(width, height);
             
             return ratio > 0.5 && path.length > 30;
@@ -1182,14 +1174,12 @@
                     navigator.vibrate(50);
                 }
                 
-                // Draw a heart emoji at the center
                 const centerX = currentPath.reduce((sum, p) => sum + p.x, 0) / currentPath.length;
                 const centerY = currentPath.reduce((sum, p) => sum + p.y, 0) / currentPath.length;
                 
                 ctx.font = '40px Arial';
                 ctx.fillText('💖', centerX - 20, centerY + 15);
                 
-                // Clear canvas after a moment
                 setTimeout(() => {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                 }, 800);
@@ -1198,7 +1188,6 @@
                     setTimeout(() => showFinalMessage(day), 1000);
                 }
             } else if (drawing && currentPath.length > 10) {
-                // Not a heart, clear after brief moment
                 setTimeout(() => {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                 }, 500);
@@ -1229,20 +1218,19 @@
             <div class="love-letter" style="max-width: 700px;">
                 <h2 style="color: #ff6b9d; text-align: center; margin-bottom: 20px;">My Final Love Letter ❤️</h2>
                 <p style="line-height: 1.8; font-size: 1.1em; color: #555;">
-                    My Dearest Love,<br><br>
+                    My Dearest Nono,<br><br>
                     
                     This Valentine's Week has been my way of showing you what you mean to me. 
                     Every day, every moment with you is a gift I cherish deeply.<br><br>
                     
-                    You are my sunrise and my sunset, my laughter and my peace. 
-                    With you, I've found a love that makes every day feel like Valentine's Day.<br><br>
+                    Wese toh mein in sab valentine felentine mein nahi maanta hu par thik hai ab…<br><br>
                     
                     Thank you for being you. Thank you for choosing me. Thank you for this beautiful journey we're on together.<br><br>
                     
                     I love you more than words can express, today and always.<br><br>
                     
                     Forever yours,<br>
-                    Your Love 💕
+                    Your Chotu 💕
                 </p>
                 <button onclick="showFinalMessage(currentTask)" style="margin-top: 20px;">I Love You Too ❤️</button>
             </div>
@@ -1252,13 +1240,13 @@
     function showFinalMessage(day) {
         const finalMsg = document.getElementById('finalMessage');
         finalMsg.innerHTML = `
-            ${day.finalImage ? `<img src="${day.finalImage}" alt="${day.name}">` : ''}
+            ${day.finalImage ? `<img src="${day.finalImage}" alt="Love">` : ''}
             <h2>${day.emoji}</h2>
             <p>${day.finalMessage}</p>
+            <button onclick="closeTask()" style="margin-top: 20px;">Close 💖</button>
         `;
         finalMsg.classList.add('show');
         
-        // Create confetti
         for (let i = 0; i < 100; i++) {
             setTimeout(() => createConfetti(), i * 30);
         }
@@ -1276,7 +1264,6 @@
         setTimeout(() => confetti.remove(), 4000);
     }
 
-    // Initialize on page load
     initializeDays();
 </script>
 ```
